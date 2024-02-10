@@ -3,28 +3,33 @@
 Скачайте Airbnb NYC Dataset with Ratings and Reviews (nyc-airbnb-with-reviews.csv) из Kaggle: https://www.kaggle.com/datasets/dgomonov/new-york-city-airbnb-open-data
 
 
-sudo docker cp Загрузки/AB_NYC_2019.csv namenode:/AB_NYC_2019.csv
+sudo docker cp Загрузки/dataset.csv namenode:/dataset.csv
 sudo docker exec -it namenode bash
 hdfs dfs -ls /
-hdfs dfs -put /AB_NYC_2019.csv /
+hdfs dfs -put /dataset.csv /
+
+sudo docker exec -it hive-server beeline -u 'jdbc:hive2://hive-server:10000/'
+
+CREATE TABLE airbnb (price INT) row format delimited fields terminated by ',' stored as textfile;
+
+describe airbnb;
 
 
-CREATE TABLE airbnb (id INT, name STRING, host_id INT, host_name STRING, neighborhood_group STRING, lattitude string, longtitude string, room_type string, price INT) row format delimited fields terminated by ',' stored as textfile;
-
-
-LOAD DATA INPATH '/AB_NYC_2019.csv' INTO TABLE airbnb;
+LOAD DATA INPATH '/dataset.csv' INTO TABLE airbnb;
 
 select * from airbnb limit 5;
 
 
 2. Расчет среднего значения:
 
-SELECT AVG(value) AS average_value FROM airbnb;
+select avg(price) as average_price from airbnb;
 
 3. Расчет дисперсии:
 
-SELECT VARIANCE(value) AS variance_value FROM airbnb;
+select variance(price) AS variance_price from airbnb;
 
 4. Пример:
 
-SELECT AVG(value) AS average_value, VARIANCE(value) AS variance_value FROM airbnb;
+select avg(price) as average_price, variance(price) AS variance_price from airbnb;
+
+WITH first_1000 AS (SELECT * FROM airbnb ORDER BY price LIMIT 1000) SELECT AVG(price) AS average, VARIANCE(price) AS variance FROM first_1000;
