@@ -1,0 +1,30 @@
+1. Подготовка:
+
+Скачайте Airbnb NYC Dataset with Ratings and Reviews (nyc-airbnb-with-reviews.csv) из Kaggle: https://www.kaggle.com/datasets/dgomonov/new-york-city-airbnb-open-data
+
+
+sudo docker cp Загрузки/AB_NYC_2019.csv namenode:/AB_NYC_2019.csv
+sudo docker exec -it namenode bash
+hdfs dfs -ls /
+hdfs dfs -put /AB_NYC_2019.csv /
+
+
+CREATE TABLE airbnb (id INT, name STRING, host_id INT, host_name STRING, neighborhood_group STRING, lattitude string, longtitude string, room_type string, price INT) row format delimited fields terminated by ',' stored as textfile;
+
+
+LOAD DATA INPATH '/AB_NYC_2019.csv' INTO TABLE airbnb;
+
+select * from airbnb limit 5;
+
+
+2. Расчет среднего значения:
+
+SELECT AVG(value) AS average_value FROM airbnb;
+
+3. Расчет дисперсии:
+
+SELECT VARIANCE(value) AS variance_value FROM airbnb;
+
+4. Пример:
+
+SELECT AVG(value) AS average_value, VARIANCE(value) AS variance_value FROM airbnb;
