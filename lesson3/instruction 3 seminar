@@ -8,7 +8,7 @@ hdfs dfs -put /my_dictionary.csv /
 sudo docker exec -it hive-server beeline -u 'jdbc:hive2://hive-server:10000/'
 
 
-CREATE EXTERNAL TABLE cars(make STRING, model STRING, price INT) STORED AS TEXTFILE LOCATION 'Загрузки/my_dictionary.csv';
+CREATE EXTERNAL TABLE cars(make STRING, price INT) STORED AS TEXTFILE LOCATION 'Загрузки/my_dictionary.csv';
 
 LOAD DATA INPATH 'Загрузки/my_dictionary.csv' INTO TABLE cars;
 
