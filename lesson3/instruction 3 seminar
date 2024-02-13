@@ -1,0 +1,38 @@
+
+
+sudo docker start $(sudo docker ps -a -q)
+
+
+sudo docker cp Загрузки/my_dictionary.csv namenode:/my_dictionary.csv
+sudo docker exec -it namenode bash
+hdfs dfs -ls /
+hdfs dfs -put /my_dictionary.csv /
+
+sudo docker exec -it hive-server beeline -u 'jdbc:hive2://hive-server:10000/'
+
+CREATE TABLE airbnb (price INT) row format delimited fields terminated by ',' stored as textfile;
+
+describe airbnb;
+
+
+LOAD DATA INPATH '/my_dictionary.csv' INTO TABLE airbnb;
+
+select * from airbnb limit 5;
+
+
+
+CREATE EXTERNAL TABLE cars(make STRING, model STRING, price INT) STORED AS TEXTFILE LOCATION 'Загрузки/my_dictionary.csv';
+
+
+LOAD DATA INPATH 'Загрузки/my_dictionary.csv' INTO TABLE cars;
+
+
+SELECT make, MAX(price) AS max_price FROM cars GROUP BY make ORDER BY max_price DESC LIMIT 1;
+
+SELECT make, MIN(price) AS min_price FROM cars GROUP BY make ORDER BY min_price ASC LIMIT 1;
+
+
+SELECT make, AVG(price) AS avg_price FROM cars GROUP BY make;
+
+
+SELECT make, COUNT(*) AS car_count FROM cars GROUP BY make;
